@@ -11,6 +11,16 @@ const RootLayer = () => {
         <Link to='/about' className='[&.active]:font-bold'>
           About
         </Link>
+        <Link to='/posts' className='[&.active]:font-bold'>
+          Posts
+        </Link>
+        <Link
+          to='/posts/$postId'
+          className='[&.active]:font-bold'
+          params={{ postId: '1' }}
+        >
+          Post $postId
+        </Link>
       </div>
       <hr />
       <Outlet />
