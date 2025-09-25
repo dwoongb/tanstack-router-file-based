@@ -4,12 +4,12 @@ import {
   useRouter,
 } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/posts/$postId')({
-  component: Post,
+export const Route = createFileRoute('/_layout/list/$cardId')({
+  component: RouteComponent,
 });
 
-function Post() {
-  const { postId } = Route.useParams();
+function RouteComponent() {
+  const { cardId } = Route.useParams();
 
   const router = useRouter();
   const canGoBack = useCanGoBack();
@@ -21,9 +21,9 @@ function Post() {
   };
 
   return (
-    <div className='p-2'>
-      <p>Hello "/posts/$postId"!</p>
-      <p className='text-lg'>postId: {postId}</p>
+    <div>
+      <p> Hello "/_layout/list/$cardId"!</p>
+      <p className='text-lg'>cardId: {cardId}</p>
 
       <br />
 

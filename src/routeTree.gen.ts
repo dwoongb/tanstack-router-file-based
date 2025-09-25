@@ -10,13 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PostsIndexRouteImport } from './routes/posts/index'
 import { Route as PostsPostIdRouteImport } from './routes/posts/$postId'
+import { Route as LayoutListIndexRouteImport } from './routes/_layout/list/index'
+import { Route as LayoutListCardIdRouteImport } from './routes/_layout/list/$cardId'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LayoutRoute = LayoutRouteImport.update({
+  id: '/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -34,36 +41,68 @@ const PostsPostIdRoute = PostsPostIdRouteImport.update({
   path: '/posts/$postId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LayoutListIndexRoute = LayoutListIndexRouteImport.update({
+  id: '/list/',
+  path: '/list/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutListCardIdRoute = LayoutListCardIdRouteImport.update({
+  id: '/list/$cardId',
+  path: '/list/$cardId',
+  getParentRoute: () => LayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/posts/$postId': typeof PostsPostIdRoute
   '/posts': typeof PostsIndexRoute
+  '/list/$cardId': typeof LayoutListCardIdRoute
+  '/list': typeof LayoutListIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/posts/$postId': typeof PostsPostIdRoute
   '/posts': typeof PostsIndexRoute
+  '/list/$cardId': typeof LayoutListCardIdRoute
+  '/list': typeof LayoutListIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_layout': typeof LayoutRouteWithChildren
   '/about': typeof AboutRoute
   '/posts/$postId': typeof PostsPostIdRoute
   '/posts/': typeof PostsIndexRoute
+  '/_layout/list/$cardId': typeof LayoutListCardIdRoute
+  '/_layout/list/': typeof LayoutListIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/posts/$postId' | '/posts'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/posts/$postId'
+    | '/posts'
+    | '/list/$cardId'
+    | '/list'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/posts/$postId' | '/posts'
-  id: '__root__' | '/' | '/about' | '/posts/$postId' | '/posts/'
+  to: '/' | '/about' | '/posts/$postId' | '/posts' | '/list/$cardId' | '/list'
+  id:
+    | '__root__'
+    | '/'
+    | '/_layout'
+    | '/about'
+    | '/posts/$postId'
+    | '/posts/'
+    | '/_layout/list/$cardId'
+    | '/_layout/list/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LayoutRoute: typeof LayoutRouteWithChildren
   AboutRoute: typeof AboutRoute
   PostsPostIdRoute: typeof PostsPostIdRoute
   PostsIndexRoute: typeof PostsIndexRoute
@@ -76,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_layout': {
+      id: '/_layout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof LayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -99,11 +145,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsPostIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_layout/list/': {
+      id: '/_layout/list/'
+      path: '/list'
+      fullPath: '/list'
+      preLoaderRoute: typeof LayoutListIndexRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/list/$cardId': {
+      id: '/_layout/list/$cardId'
+      path: '/list/$cardId'
+      fullPath: '/list/$cardId'
+      preLoaderRoute: typeof LayoutListCardIdRouteImport
+      parentRoute: typeof LayoutRoute
+    }
   }
 }
 
+interface LayoutRouteChildren {
+  LayoutListCardIdRoute: typeof LayoutListCardIdRoute
+  LayoutListIndexRoute: typeof LayoutListIndexRoute
+}
+
+const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutListCardIdRoute: LayoutListCardIdRoute,
+  LayoutListIndexRoute: LayoutListIndexRoute,
+}
+
+const LayoutRouteWithChildren =
+  LayoutRoute._addFileChildren(LayoutRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LayoutRoute: LayoutRouteWithChildren,
   AboutRoute: AboutRoute,
   PostsPostIdRoute: PostsPostIdRoute,
   PostsIndexRoute: PostsIndexRoute,
