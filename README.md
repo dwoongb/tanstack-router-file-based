@@ -54,16 +54,24 @@ Open your browser and navigate to `http://localhost:5173`
 
 ```
 src/
+├── assets/                 # Static assets
 ├── routes/
 │   ├── __root.tsx          # Root layout component
 │   ├── index.tsx           # Home page (/)
 │   ├── about.tsx           # About page (/about)
+│   ├── _layout.tsx         # Layout route
+│   ├── _layout/
+│   │   └── list/
+│   │       ├── index.tsx   # List page (/list)
+│   │       └── $cardId.tsx # Dynamic card page (/list/:cardId)
 │   └── posts/
 │       ├── index.tsx       # Posts index (/posts)
 │       └── $postId.tsx     # Dynamic post page (/posts/:postId)
-├── routeTree.gen.ts        # Auto-generated route tree
+├── App.tsx                 # Main App component
 ├── main.tsx                # Application entry point
-└── global.css              # Global styles
+├── routeTree.gen.ts        # Auto-generated route tree
+├── global.css              # Global styles
+└── vite-env.d.ts          # Vite environment types
 ```
 
 ## Technologies Used
@@ -82,7 +90,14 @@ TanStack Router automatically generates routes based on the file structure in th
 - `__root.tsx` - Root layout that wraps all pages
 - `index.tsx` - Maps to the root path `/`
 - `about.tsx` - Maps to `/about`
+- `_layout.tsx` - Layout route that provides shared UI for nested routes
+- `_layout/list/index.tsx` - Maps to `/list` (uses _layout.tsx as wrapper)
+- `_layout/list/$cardId.tsx` - Maps to `/list/:cardId` (dynamic route with layout)
 - `posts/index.tsx` - Maps to `/posts`
 - `posts/$postId.tsx` - Maps to `/posts/:postId` (dynamic route)
+
+### Layout Routes
+
+Layout routes (prefixed with `_`) provide shared UI and logic for nested routes without adding path segments to the URL. The `_layout.tsx` file wraps all routes within the `_layout/` directory, allowing you to share components like navigation, headers, or sidebars across multiple pages.
 
 The route tree is automatically generated in `routeTree.gen.ts` and should not be manually edited.
